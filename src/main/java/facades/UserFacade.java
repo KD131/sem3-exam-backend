@@ -1,8 +1,12 @@
 package facades;
 
+import dtos.UserDTO;
+import entities.Role;
 import entities.User;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.WebApplicationException;
+
 import security.errorhandling.AuthenticationException;
 
 /**
@@ -43,4 +47,23 @@ public class UserFacade {
         return user;
     }
 
+    public UserDTO signup(String username, String password) {
+        EntityManager em = emf.createEntityManager();
+        User user = em.find(User.class, username);
+        if (user != null) {
+            throw new WebApplicationException("Username is already taken.", 409);
+        }
+        user = new User(username, password);
+        Role role = new Role("user");   // this works, but I worry slightly that we don't get the actual role entity with "find"
+        user.addRole(role);
+        try {
+            em.getTransaction().begin();
+            em.persist(user);
+            em.getTransaction().commit();
+            return new UserDTO(user);
+        }
+        finally {
+            em.close();
+        }
+    }
 }
