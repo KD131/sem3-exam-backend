@@ -29,7 +29,7 @@ public class ConferenceResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("all")
-    @RolesAllowed("user")
+    @RolesAllowed({"user", "admin"})
     public String getAll() {
         return GSON.toJson(CONFERENCE_FACADE.getAll());
     }
@@ -37,7 +37,7 @@ public class ConferenceResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("id/{id}")
-    @RolesAllowed("user")
+    @RolesAllowed({"user", "admin"})
     public String getById(@PathParam("id") int id) {
         return GSON.toJson(CONFERENCE_FACADE.getById(id));
     }
