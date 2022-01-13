@@ -15,6 +15,9 @@ public class Speaker {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "profession", nullable = false)
+    private String profession;
+
     @Column(name = "gender", nullable = false)
     private String gender;
 
@@ -24,8 +27,9 @@ public class Speaker {
     public Speaker() {
     }
 
-    public Speaker(String name, String gender) {
+    public Speaker(String name, String profession, String gender) {
         this.name = name;
+        this.profession = profession;
         this.gender = gender;
         this.talks = new ArrayList<>();
     }
@@ -36,6 +40,10 @@ public class Speaker {
 
     public String getName() {
         return name;
+    }
+
+    public String getProfession() {
+        return profession;
     }
 
     public String getGender() {
