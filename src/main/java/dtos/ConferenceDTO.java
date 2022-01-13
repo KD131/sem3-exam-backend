@@ -27,6 +27,34 @@ public class ConferenceDTO {
         this.talks = TalkDTO.getDTOs(conference.getTalks());
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public List<TalkDTO> getTalks() {
+        return talks;
+    }
+
     public static List<ConferenceDTO> getDTOs(List<Conference> entities) {
         List<ConferenceDTO> dtos = new ArrayList<>();
         entities.forEach(e -> dtos.add(new ConferenceDTO(e)));

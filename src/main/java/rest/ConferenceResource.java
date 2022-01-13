@@ -33,4 +33,12 @@ public class ConferenceResource {
     public String getAll() {
         return GSON.toJson(CONFERENCE_FACADE.getAll());
     }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("id/{id}")
+    @RolesAllowed("user")
+    public String getById(@PathParam("id") int id) {
+        return GSON.toJson(CONFERENCE_FACADE.getById(id));
+    }
 }
