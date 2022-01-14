@@ -4,6 +4,7 @@ import entities.Conference;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,17 +14,20 @@ public class ConferenceDTO {
     private String name;
     private String location;
     private int capacity;
-    private LocalDate date;
-    private LocalTime time;
+    private String date;
+    private String time;
     private List<TalkDTO> talks;
 
     public ConferenceDTO(Conference conference) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
         this.id = conference.getId();
         this.name = conference.getName();
         this.location = conference.getLocation();
         this.capacity = conference.getCapacity();
-        this.date = conference.getDate();
-        this.time = conference.getTime();
+        this.date = conference.getDate().format(dateFormatter);
+        this.time = conference.getTime().format(timeFormatter);
         this.talks = TalkDTO.getDTOs(conference.getTalks());
     }
 
@@ -43,11 +47,11 @@ public class ConferenceDTO {
         return capacity;
     }
 
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
-    public LocalTime getTime() {
+    public String getTime() {
         return time;
     }
 
