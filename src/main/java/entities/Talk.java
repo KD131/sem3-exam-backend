@@ -2,6 +2,7 @@ package entities;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Entity
@@ -35,7 +36,7 @@ public class Talk {
             CascadeType.PERSIST,
             CascadeType.MERGE
     })
-    @JoinColumn(name = "conference", nullable = false)
+    @JoinColumn(name = "conference", nullable = true)
     private Conference conference;
 
     public Talk() {
@@ -88,6 +89,17 @@ public class Talk {
         if (speaker != null) {
             this.speakers.remove(speaker);
             speaker.getTalks().remove(this);
+        }
+    }
+
+    public void removeAllSpeakers() {
+        Iterator<Speaker> iterator = speakers.iterator();
+        while (iterator.hasNext()) {
+            Speaker speaker = iterator.next();
+            if (speaker != null) {
+                iterator.remove();
+                speaker.getTalks().remove(this);
+            }
         }
     }
 }

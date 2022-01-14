@@ -50,4 +50,23 @@ public class TalkFacade {
             em.close();
         }
     }
+
+    public TalkDTO delete(int id) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            Talk talk = em.find(Talk.class, id);
+            if (talk == null) {
+                throw new WebApplicationException("Talk not found", 404);
+            }
+            em.getTransaction().begin();
+            talk.removeAllSpeakers();
+            talk.getConference().removeTalk(talk);
+            em.remove(talk);
+            em.getTransaction().commit();
+            return new TalkDTO(talk);
+        }
+        finally {
+            em.close();
+        }
+    }
 }
