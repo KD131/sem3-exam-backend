@@ -64,4 +64,23 @@ public class SpeakerFacade {
             em.close();
         }
     }
+
+    public SpeakerDTO update(SpeakerDTO dto) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            Speaker oldItem = em.find(Speaker.class, dto.getId());
+            if (oldItem == null) {
+                throw new WebApplicationException("Speaker not found", 404);
+            }
+            Speaker newItem = new Speaker(dto);
+            newItem.setId(oldItem.getId());     // I'm not sure why this is needed. I thought they already had the same ID.
+            em.getTransaction().begin();
+            em.merge(newItem);
+            em.getTransaction().commit();
+            return new SpeakerDTO(newItem);
+        }
+        finally {
+            em.close();
+        }
+    }
 }

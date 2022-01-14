@@ -91,4 +91,14 @@ class SpeakerFacadeTest {
         facade.create(newSpeaker);
         assertEquals(4, facade.getAll().size());
     }
+
+    @Test
+    void update() {
+        SpeakerDTO newItem = new SpeakerDTO(s2);
+        newItem.setProfession("skater boi");
+        facade.update(newItem);
+        SpeakerDTO updated = facade.getById(newItem.getId());
+        assertEquals(newItem.getName(), updated.getName());
+        assertEquals(newItem.getProfession(), updated.getProfession());
+    }
 }
