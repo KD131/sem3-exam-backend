@@ -157,6 +157,46 @@ class TalkResourceTest {
     }
 
     @Test
+    void getAll() {
+        login("user", "test");
+        given()
+                .accept(MediaType.APPLICATION_JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .get("talks/all")
+                .then()
+                .statusCode(200)
+                .body("size", equalTo(3));
+    }
+
+    @Test
+    void getById() {
+        login("user", "test");
+        given()
+                .accept(MediaType.APPLICATION_JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .get("talks/id/" + t2.getId())
+                .then()
+                .statusCode(200)
+                .body("id", equalTo(t2.getId()))
+                .body("topic", equalTo(t2.getTopic()));
+    }
+
+    @Test
+    void getById_badId() {
+        login("user", "test");
+        given()
+                .accept(MediaType.APPLICATION_JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .get("talks/id/" + 99)
+                .then()
+                .body("code", equalTo(404))
+                .body("message", equalTo("Talk not found"));
+    }
+
+    @Test
     void delete() {
         login("admin", "test");
         given()
@@ -168,5 +208,18 @@ class TalkResourceTest {
                 .statusCode(200)
                 .body("id", equalTo(t3.getId()))
                 .body("topic", equalTo(t3.getTopic()));
+    }
+
+    @Test
+    void delete_badId() {
+        login("admin", "test");
+        given()
+                .accept(MediaType.APPLICATION_JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .delete("talks/id/" + 99)
+                .then()
+                .body("code", equalTo(404))
+                .body("message", equalTo("Talk not found"));
     }
 }
