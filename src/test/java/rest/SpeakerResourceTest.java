@@ -1,7 +1,10 @@
 package rest;
 
-import com.google.gson.Gson;
-import entities.*;
+import dtos.SpeakerDTO;
+import entities.Role;
+import entities.Speaker;
+import entities.User;
+import facades.SpeakerFacade;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
 import org.glassfish.grizzly.http.server.HttpServer;
@@ -14,15 +17,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
+
 import java.net.URI;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
-class TalkResourceTest {
+class SpeakerResourceTest {
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
 
@@ -30,12 +32,6 @@ class TalkResourceTest {
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
 
-    private static Conference c1;
-    private static Conference c2;
-    private static Conference c3;
-    private static Talk t1;
-    private static Talk t2;
-    private static Talk t3;
     private static Speaker s1;
     private static Speaker s2;
     private static Speaker s3;
@@ -69,21 +65,9 @@ class TalkResourceTest {
     @BeforeEach
     void setUp() {
         EntityManager em = emf.createEntityManager();
-
-        c1 = new Conference("TestCon", "Test City", 10, LocalDate.now(), LocalTime.now());
-        c2 = new Conference("ComicCon", "San Diego", 20000, LocalDate.now().plusMonths(6), LocalTime.now());
-        c3 = new Conference("PAX East", "Boston", 35000, LocalDate.now().plusWeeks(3), LocalTime.now().plusHours(2));
-        t1 = new Talk("Public Relations", "2 hours", c1);
-        t2 = new Talk("Ethics of Vigilantism", "3 hours", c2);
-        t3 = new Talk("Ubisoft", "30 minutes", c3);
         s1 = new Speaker("Testy Testson", "tester", "male");
         s2 = new Speaker("Erica Spokesman", "presenter", "female");
         s3 = new Speaker("Peter Parker", "vigilante", "male");
-        t1.addSpeaker(s1);
-        t2.addSpeaker(s3);
-        t3.addSpeaker(s2);
-        t3.addSpeaker(s3);
-
         try {
             em.getTransaction().begin();
 
@@ -102,12 +86,6 @@ class TalkResourceTest {
             em.persist(admin);
             em.persist(both);
 
-            em.persist(c1);
-            em.persist(c2);
-            em.persist(c3);
-            em.persist(t1);
-            em.persist(t2);
-            em.persist(t3);
             em.persist(s1);
             em.persist(s2);
             em.persist(s3);
@@ -129,9 +107,8 @@ class TalkResourceTest {
             em.createQuery("delete from Role").executeUpdate();
 
             em.createNativeQuery("DELETE FROM speakers_talks").executeUpdate();
-            em.createNativeQuery("DELETE FROM speakers").executeUpdate();
             em.createNativeQuery("DELETE FROM talks").executeUpdate();
-            em.createNativeQuery("DELETE FROM conferences").executeUpdate();
+            em.createNativeQuery("DELETE FROM speakers").executeUpdate();
             em.getTransaction().commit();
         }
         finally {
@@ -156,69 +133,21 @@ class TalkResourceTest {
     }
 
     @Test
-    void getAll() {
-        login("user", "test");
-        given()
-                .accept(MediaType.APPLICATION_JSON)
-                .header("x-access-token", securityToken)
-                .when()
-                .get("talks/all")
-                .then()
-                .statusCode(200)
-                .body("size", equalTo(3));
-    }
-
-    @Test
-    void getById() {
-        login("user", "test");
-        given()
-                .accept(MediaType.APPLICATION_JSON)
-                .header("x-access-token", securityToken)
-                .when()
-                .get("talks/id/" + t2.getId())
-                .then()
-                .statusCode(200)
-                .body("id", equalTo(t2.getId()))
-                .body("topic", equalTo(t2.getTopic()));
-    }
-
-    @Test
-    void getById_badId() {
-        login("user", "test");
-        given()
-                .accept(MediaType.APPLICATION_JSON)
-                .header("x-access-token", securityToken)
-                .when()
-                .get("talks/id/" + 99)
-                .then()
-                .body("code", equalTo(404))
-                .body("message", equalTo("Talk not found"));
-    }
-
-    @Test
-    void delete() {
+    void create() {
         login("admin", "test");
+        SpeakerDTO newSpeaker = new SpeakerDTO("New Guy", "intern", "male");
+
         given()
                 .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
                 .header("x-access-token", securityToken)
+                .body(newSpeaker)
                 .when()
-                .delete("talks/id/" + t3.getId())
+                .post("speakers")
                 .then()
                 .statusCode(200)
-                .body("id", equalTo(t3.getId()))
-                .body("topic", equalTo(t3.getTopic()));
-    }
-
-    @Test
-    void delete_badId() {
-        login("admin", "test");
-        given()
-                .accept(MediaType.APPLICATION_JSON)
-                .header("x-access-token", securityToken)
-                .when()
-                .delete("talks/id/" + 99)
-                .then()
-                .body("code", equalTo(404))
-                .body("message", equalTo("Talk not found"));
+                .body("name", equalTo(newSpeaker.getName()))
+                .body("profession", equalTo(newSpeaker.getProfession()))
+                .body("gender", equalTo(newSpeaker.getGender()));
     }
 }

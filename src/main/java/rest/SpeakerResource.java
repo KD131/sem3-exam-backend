@@ -2,15 +2,13 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dtos.SpeakerDTO;
 import facades.SpeakerFacade;
 import utils.EMF_Creator;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManagerFactory;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
@@ -44,4 +42,14 @@ public class SpeakerResource {
     public String getById(@PathParam("id") int id) {
         return GSON.toJson(SPEAKER_FACADE.getById(id));
     }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String create(String speaker) {
+        SpeakerDTO toCreate = GSON.fromJson(speaker, SpeakerDTO.class);
+        SpeakerDTO created = SPEAKER_FACADE.create(toCreate);
+        return GSON.toJson(created);
+    }
+
 }
