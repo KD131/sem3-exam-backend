@@ -150,4 +150,45 @@ class SpeakerResourceTest {
                 .body("profession", equalTo(newSpeaker.getProfession()))
                 .body("gender", equalTo(newSpeaker.getGender()));
     }
+
+    @Test
+    void update() {
+        login("admin", "test");
+        SpeakerDTO newItem = new SpeakerDTO(s2);
+        newItem.setProfession("skater boi");
+
+        given()
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-access-token", securityToken)
+                .body(newItem)
+                .when()
+                .put("speakers/id/" + newItem.getId())
+                .then()
+                .statusCode(200)
+                .body("name", equalTo(newItem.getName()))
+                .body("profession", equalTo(newItem.getProfession()))
+                .body("gender", equalTo(newItem.getGender()));
+    }
+
+    @Test
+    void update_ignoreBadId() {
+        login("admin", "test");
+        SpeakerDTO newItem = new SpeakerDTO(s2);
+        newItem.setProfession("skater boi");
+        newItem.setId(99);
+
+        given()
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("x-access-token", securityToken)
+                .body(newItem)
+                .when()
+                .put("speakers/id/" + s2.getId())
+                .then()
+                .statusCode(200)
+                .body("name", equalTo(newItem.getName()))
+                .body("profession", equalTo(newItem.getProfession()))
+                .body("gender", equalTo(newItem.getGender()));
+    }
 }

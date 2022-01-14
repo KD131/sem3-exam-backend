@@ -52,4 +52,16 @@ public class SpeakerResource {
         return GSON.toJson(created);
     }
 
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("id/{id}")
+    public String update(@PathParam("id") int id, String speaker) {
+        SpeakerDTO toUpdate = GSON.fromJson(speaker, SpeakerDTO.class);
+        // we ignore bad Ids in the provided JSON
+        toUpdate.setId(id);
+        SpeakerDTO updated = SPEAKER_FACADE.update(toUpdate);
+        return GSON.toJson(updated);
+    }
+
 }
