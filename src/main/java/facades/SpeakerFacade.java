@@ -50,4 +50,18 @@ public class SpeakerFacade {
             em.close();
         }
     }
+
+    public SpeakerDTO create(SpeakerDTO dto) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            Speaker entity = new Speaker(dto);
+            em.getTransaction().begin();
+            em.persist(entity);
+            em.getTransaction().commit();
+            return new SpeakerDTO(entity);
+        }
+        finally {
+            em.close();
+        }
+    }
 }
