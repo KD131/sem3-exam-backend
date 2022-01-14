@@ -11,6 +11,7 @@ import utils.EMF_Creator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.WebApplicationException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -95,5 +96,14 @@ class TalkFacadeTest {
         assertEquals(3, facade.getAll().size());
         facade.delete(t2.getId());
         assertEquals(2, facade.getAll().size());
+    }
+
+    @Test
+    void delete_badId() {
+        WebApplicationException e = assertThrows(WebApplicationException.class, () -> {
+            facade.delete(666);
+        });
+        assertEquals(404, e.getResponse().getStatus());
+        assertEquals("Talk not found", e.getMessage());
     }
 }
