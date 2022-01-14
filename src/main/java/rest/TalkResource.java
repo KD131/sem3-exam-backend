@@ -7,10 +7,7 @@ import utils.EMF_Creator;
 
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManagerFactory;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
@@ -43,5 +40,13 @@ public class TalkResource {
     @RolesAllowed({"user", "admin"})
     public String getById(@PathParam("id") int id) {
         return GSON.toJson(TALK_FACADE.getById(id));
+    }
+
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("id/{id}")
+    @RolesAllowed({"user", "admin"})
+    public String delete(@PathParam("id") int id) {
+        return GSON.toJson(TALK_FACADE.delete(id));
     }
 }
