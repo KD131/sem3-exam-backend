@@ -96,6 +96,10 @@ class TalkFacadeTest {
         assertEquals(3, facade.getAll().size());
         facade.delete(t2.getId());
         assertEquals(2, facade.getAll().size());
+
+        EntityManager em = emf.createEntityManager();
+        Conference c = em.find(Conference.class, t2.getConference().getId());
+        assertEquals(0, c.getTalks().size());
     }
 
     @Test
