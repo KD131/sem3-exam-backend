@@ -90,7 +90,7 @@ public class SpeakerFacade {
         try {
             Speaker speaker = em.find(Speaker.class, id);
             if (speaker == null) {
-                throw new WebApplicationException("Talk not found", 404);
+                throw new WebApplicationException("Speaker not found", 404);
             }
             em.getTransaction().begin();
             speaker.removeAllTalks();
