@@ -30,6 +30,7 @@ public class Speaker {
     }
 
     public Speaker(SpeakerDTO dto) {
+        this.id = dto.getId();
         this.name = dto.getName();
         this.profession = dto.getProfession();
         this.gender = dto.getGender();

@@ -73,7 +73,6 @@ public class SpeakerFacade {
                 throw new WebApplicationException("Speaker not found", 404);
             }
             Speaker newItem = new Speaker(dto);
-            newItem.setId(oldItem.getId());     // I'm not sure why this is needed. I thought they already had the same ID.
             em.getTransaction().begin();
             em.merge(newItem);
             em.getTransaction().commit();
