@@ -1,7 +1,9 @@
 package facades;
 
 import dtos.SpeakerDTO;
+import dtos.TalkDTO;
 import entities.Speaker;
+import entities.Talk;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -77,6 +79,24 @@ public class SpeakerFacade {
             em.merge(newItem);
             em.getTransaction().commit();
             return new SpeakerDTO(newItem);
+        }
+        finally {
+            em.close();
+        }
+    }
+
+    public SpeakerDTO delete(int id) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            Speaker speaker = em.find(Speaker.class, id);
+            if (speaker == null) {
+                throw new WebApplicationException("Talk not found", 404);
+            }
+            em.getTransaction().begin();
+            speaker.removeAllTalks();
+            em.remove(speaker);
+            em.getTransaction().commit();
+            return new SpeakerDTO(speaker);
         }
         finally {
             em.close();

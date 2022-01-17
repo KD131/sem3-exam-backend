@@ -67,4 +67,9 @@ public class Speaker {
     public List<Talk> getTalks() {
         return talks;
     }
+
+    public void removeAllTalks() {
+        talks.forEach(t -> t.getSpeakers().remove(this));
+        talks.clear();
+    }
 }

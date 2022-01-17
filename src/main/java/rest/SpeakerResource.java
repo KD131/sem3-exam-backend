@@ -64,4 +64,11 @@ public class SpeakerResource {
         return GSON.toJson(updated);
     }
 
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("id/{id}")
+    @RolesAllowed({"user", "admin"})
+    public String delete(@PathParam("id") int id) {
+        return GSON.toJson(SPEAKER_FACADE.delete(id));
+    }
 }
