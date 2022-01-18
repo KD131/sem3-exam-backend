@@ -45,7 +45,7 @@ public class TalkResource {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("id/{id}")
-    @RolesAllowed({"user", "admin"})
+    @RolesAllowed({"admin"})
     public String delete(@PathParam("id") int id) {
         return GSON.toJson(TALK_FACADE.delete(id));
     }

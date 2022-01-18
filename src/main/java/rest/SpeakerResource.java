@@ -46,6 +46,7 @@ public class SpeakerResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin"})
     public String create(String speaker) {
         SpeakerDTO toCreate = GSON.fromJson(speaker, SpeakerDTO.class);
         SpeakerDTO created = SPEAKER_FACADE.create(toCreate);
@@ -56,6 +57,7 @@ public class SpeakerResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("id/{id}")
+    @RolesAllowed({"admin"})
     public String update(@PathParam("id") int id, String speaker) {
         SpeakerDTO toUpdate = GSON.fromJson(speaker, SpeakerDTO.class);
         // we ignore bad Ids in the provided JSON
@@ -67,7 +69,7 @@ public class SpeakerResource {
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("id/{id}")
-    @RolesAllowed({"user", "admin"})
+    @RolesAllowed({"admin"})
     public String delete(@PathParam("id") int id) {
         return GSON.toJson(SPEAKER_FACADE.delete(id));
     }
